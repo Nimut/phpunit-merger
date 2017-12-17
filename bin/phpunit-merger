@@ -20,5 +20,10 @@ if (!file_exists($classLoaderFilepath)) {
 require $classLoaderFilepath;
 
 $app = new \Symfony\Component\Console\Application('nimut/phpunit-merger', '1.0');
-$app->add(new \Nimut\PhpunitMerger\Command\CoverageCommand());
+$app->addCommands(
+    [
+        new \Nimut\PhpunitMerger\Command\CoverageCommand(),
+        new \Nimut\PhpunitMerger\Command\LogCommand(),
+    ]
+);
 $app->run();
