@@ -1,0 +1,5 @@
+2017-12-17         [RELEASE] Release of nimut/phpunit-merger 0.1.0 (Nicole Cordes)
+2017-12-17 470b791 [FEATURE] Add (very) basic log command (Nicole Cordes)
+2017-12-17 0db9a98 [FEATURE] Add (very) basic coverage command (Nicole Cordes)
+2017-12-17 34fa7d7 [TASK] Add composer.json (Nicole Cordes)
+2017-12-17 ae3355f [TASK] Ignore .Build and .idea folders in .gitignore (Nicole Cordes)
