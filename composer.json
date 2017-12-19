@@ -31,6 +31,9 @@
         "symfony/console": "^3.0 || ^4.0",
         "symfony/finder": "^3.0 || ^4.0"
     },
+    "suggest": {
+        "friendsofphp/php-cs-fixer": "Tool to automatically fix PHP coding standards issues"
+    },
     "autoload": {
         "psr-4": {
             "Nimut\\PhpunitMerger\\": "src/PhpunitMerger/"
