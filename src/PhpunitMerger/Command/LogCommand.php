@@ -48,10 +48,14 @@ class LogCommand extends Command
         $this->document->appendChild($root);
 
         foreach ($finder as $file) {
-            $xml = new \SimpleXMLElement(file_get_contents($file->getRealPath()));
-            $xmlArray = json_decode(json_encode($xml), true);
-            if (!empty($xmlArray)) {
-                $this->addTestSuites($root, $xmlArray);
+            try {
+                $xml = new \SimpleXMLElement(file_get_contents($file->getRealPath()));
+                $xmlArray = json_decode(json_encode($xml), true);
+                if (!empty($xmlArray)) {
+                    $this->addTestSuites($root, $xmlArray);
+                }
+            } catch (\Exception $exception) {
+                // Initial fallthrough
             }
         }
 
