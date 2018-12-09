@@ -47,7 +47,7 @@ script:
     echo;
     echo;
     bin/phpunit-merger coverage .Log/coverage/ .Log/coverage.xml;
-    bin/phpunit-merger log .Log/log/ .Log/log.xml;
+    bin/phpunit-merger log .Log/log/ .Log/junit.xml;
 
   - >
     echo;
@@ -82,7 +82,7 @@ jobs:
           echo;
           echo;
           bin/phpunit-merger coverage .Log/coverage/ .Log/coverage.xml;
-          bin/phpunit-merger log .Log/junit/ .Log/junit.xml;
+          bin/phpunit-merger log .Log/log/ .Log/junit.xml;
 
         - git fetch --unshallow || true
 
