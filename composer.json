@@ -34,12 +34,20 @@
         "symfony/console": "^3.0 || ^4.0",
         "symfony/finder": "^3.0 || ^4.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
+    },
     "suggest": {
         "friendsofphp/php-cs-fixer": "Tool to automatically fix PHP coding standards issues"
     },
     "autoload": {
         "psr-4": {
             "Nimut\\PhpunitMerger\\": "src/PhpunitMerger/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nimut\\PhpunitMerger\\Tests\\": "tests/PhpunitMerger/"
         }
     },
     "bin": [

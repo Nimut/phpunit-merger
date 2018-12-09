@@ -1,0 +1,94 @@
+language: php
+
+addons:
+  apt:
+    packages:
+      - parallel
+  sonarcloud:
+    organization: "ichhabrecht-github"
+    branches:
+      - master
+      - pre-merge
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.sonar/cache
+
+jdk:
+  - oraclejdk8
+
+sudo: required
+
+install:
+  - mkdir -p .Log/coverage/ .Log/log/
+  - >
+    for COVERAGE in $COVERAGE_VERSIONS; do
+      echo;
+      echo "Installing phpunit/php-code-coverage version $COVERAGE";
+      echo;
+      echo;
+      git clean -Xdf;
+      composer require phpunit/php-code-coverage="$COVERAGE";
+      git checkout composer.json;
+      VERSION=${COVERAGE//[!0-9]/};
+
+      echo;
+      echo "Running phpunit";
+      echo;
+      echo;
+      .Build/bin/phpunit --log-junit .Log/log/junit_$VERSION.xml --coverage-php .Log/coverage/coverage_$VERSION.cov --whitelist src/ tests/;
+    done
+
+script:
+  - >
+    echo;
+    echo "Merging log and coverage files";
+    echo;
+    echo;
+    bin/phpunit-merger coverage .Log/coverage/ .Log/coverage.xml;
+    bin/phpunit-merger log .Log/log/ .Log/log.xml;
+
+  - >
+    echo;
+    echo "Running php lint";
+    echo;
+    echo;
+    find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
+
+jobs:
+  fast_finish: true
+  include:
+    - stage: test
+      php: 7.2
+      env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
+    - stage: test
+      php: 7.1
+      env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
+    - stage: test
+      php: 7.0
+      env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
+
+    - stage: ✔ with sonarqube scanner
+      if: type = push AND branch IN (master, pre-merge) AND env(SONAR_TOKEN) IS present AND fork = false
+      php: 7.2
+      env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
+      before_install:
+      before_script:
+      script:
+        - >
+          echo;
+          echo "Merging log and coverage files";
+          echo;
+          echo;
+          bin/phpunit-merger coverage .Log/coverage/ .Log/coverage.xml;
+          bin/phpunit-merger log .Log/junit/ .Log/junit.xml;
+
+        - git fetch --unshallow || true
+
+        - >
+          echo;
+          echo "Running SonarQube Scanner";
+          echo;
+          echo;
+          sonar-scanner;
