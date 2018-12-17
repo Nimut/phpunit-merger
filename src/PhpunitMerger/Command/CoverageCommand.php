@@ -3,6 +3,7 @@ namespace Nimut\PhpunitMerger\Command;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Report\Clover;
+use SebastianBergmann\CodeCoverage\Report\Html\Facade;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,9 +22,15 @@ class CoverageCommand extends Command
                 'The directory containing PHPUnit coverage php files'
             )
             ->addArgument(
-                'file',
+                'output',
                 InputArgument::REQUIRED,
-                'The file where to write the merged result'
+                'The output where to write the merged result. Can be foo.xml or simple directory name'
+            )
+            ->addArgument(
+                'type',
+                InputArgument::OPTIONAL,
+                'Type of the merged result. This actually support Clover and HTML output',
+                'clover'
             );
     }
 
@@ -40,7 +47,7 @@ class CoverageCommand extends Command
             $codeCoverage->merge($coverage);
         }
 
-        $writer = new Clover();
-        $writer->process($codeCoverage, $input->getArgument('file'));
+        $writer = $input->getArgument('type') === 'clover' ? new Clover() : new Facade();
+        $writer->process($codeCoverage, $input->getArgument('output'));
     }
 }

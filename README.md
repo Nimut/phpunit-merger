@@ -26,13 +26,14 @@ Composer will add the package as a dev requirement to your composer.json and ins
 The coverage command merges files containing PHP_CodeCoverage objects into one file in Clover XML format.
 
 ```bash
-$ vendor/bin/phpunit-merger coverage <directory> <file>
+$ vendor/bin/phpunit-merger coverage <directory> <output> <type>
 ```
 
 **Arguments**
 
 - `directory`: Provides the directory containing one or multiple files with PHP_CodeCoverage objects
-- `file`: File where the merged result should be stored 
+- `output`: Output where the merged result should be stored. This can be a file `foo.xml` or directory name
+- `type`: Output type default value is `clover`. This can be `clover` or `html`
 
 ### Log
 

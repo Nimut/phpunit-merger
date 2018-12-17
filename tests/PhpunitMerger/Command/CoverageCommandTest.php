@@ -16,33 +16,84 @@ class CoverageCommandTest extends TestCase
     /**
      * @var string
      */
-    private $outputFile = 'coverage.xml';
+    private $output;
+
+    /**
+     * @var string
+     */
+    private $type = 'clover';
 
     public function setUp()
     {
         parent::setUp();
+    }
 
-        if (file_exists($this->logDirectory . $this->outputFile)) {
-            unlink($this->logDirectory . $this->outputFile);
+    public function testRunMergesCoverageToClover()
+    {
+        $this->output = 'coverage.xml';
+        $this->clearOutput();
+
+        $this->assertFileNotExists($this->logDirectory . $this->output);
+
+        $this->execCommand();
+
+        $this->assertFileExists($this->logDirectory . $this->output);
+    }
+
+    public function testRunMergesCoverageToHTML()
+    {
+        $this->output = 'html_coverage/';
+        $this->type = 'html';
+        $this->clearOutput();
+
+        $this->assertFileNotExists($this->logDirectory . $this->output);
+
+        $this->execCommand();
+
+        $this->assertFileExists($this->logDirectory . $this->output);
+    }
+
+    private function clearOutput()
+    {
+        $outputPath = $this->logDirectory . $this->output;
+
+        if (file_exists($outputPath) || is_dir($outputPath)) {
+            $this->type === 'clover'
+                ? unlink($outputPath)
+                : $this->recursiveDeleteDir($outputPath);
         }
     }
 
-    public function testRunMergesCoverage()
+    private function recursiveDeleteDir($directory)
     {
-        $this->assertFileNotExists($this->logDirectory . $this->outputFile);
+        foreach (scandir($directory) as $file) {
+            if ('.' === $file || '..' === $file) {
+                continue;
+            }
 
+            if (is_dir("$directory/$file")) {
+                $this->recursiveDeleteDir("$directory/$file");
+            } else {
+                unlink("$directory/$file");
+            }
+        }
+
+        rmdir($directory);
+    }
+
+    private function execCommand()
+    {
         $input = new ArgvInput(
             [
                 'coverage',
                 $this->logDirectory . 'coverage/',
-                $this->logDirectory . $this->outputFile,
+                $this->logDirectory . $this->output,
+                $this->type,
             ]
         );
         $output = new ConsoleOutput();
 
         $command = new CoverageCommand();
         $command->run($input, $output);
-
-        $this->assertFileExists($this->logDirectory . $this->outputFile);
     }
 }
