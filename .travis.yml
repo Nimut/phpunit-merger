@@ -60,6 +60,8 @@ jobs:
   fast_finish: true
   allow_failures:
     - php: 7.3
+    - env: COVERAGE_VERSIONS="^5.0 ^6.0"
+    - env: COVERAGE_VERSIONS="^5.0"
   include:
     - stage: test
       php: 7.3
@@ -68,20 +70,32 @@ jobs:
       php: 7.3
       env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
     - stage: test
+      php: 7.3
+      env: COVERAGE_VERSIONS="^5.0 ^6.0"
+    - stage: test
       php: 7.2
       env: COVERAGE_VERSIONS="~6.0.0 ~6.1.0"
     - stage: test
       php: 7.2
       env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
     - stage: test
+      php: 7.2
+      env: COVERAGE_VERSIONS="^5.0 ^6.0"
+    - stage: test
       php: 7.1
       env: COVERAGE_VERSIONS="~6.0.0 ~6.1.0"
     - stage: test
       php: 7.1
       env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
+    - stage: test
+      php: 7.1
+      env: COVERAGE_VERSIONS="^5.0 ^6.0"
     - stage: test
       php: 7.0
       env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
+    - stage: test
+      php: 7.0
+      env: COVERAGE_VERSIONS="^5.0"
 
     - stage: ✔ with sonarqube scanner
       if: type = push AND branch IN (master, pre-merge) AND env(SONAR_TOKEN) IS present AND fork = false
