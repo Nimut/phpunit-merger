@@ -2,35 +2,21 @@
 namespace Nimut\PhpunitMerger\Tests\Command;
 
 use Nimut\PhpunitMerger\Command\CoverageCommand;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-class CoverageCommandTest extends TestCase
+class CoverageCommandTest extends AbstractCommandTest
 {
     /**
      * @var string
      */
-    private $logDirectory = __DIR__ . '/../../../.Log/';
+    protected $outputFile = 'coverage.xml';
 
     /**
-     * @var string
+     * @depends testFileNotExists
      */
-    private $outputFile = 'coverage.xml';
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        if (file_exists($this->logDirectory . $this->outputFile)) {
-            unlink($this->logDirectory . $this->outputFile);
-        }
-    }
-
     public function testRunMergesCoverage()
     {
-        $this->assertFileNotExists($this->logDirectory . $this->outputFile);
-
         $input = new ArgvInput(
             [
                 'coverage',
