@@ -65,6 +65,10 @@ class LogCommand extends Command
             }
         }
 
+        $file = $input->getArgument('file');
+        if (!is_dir(dirname($file))) {
+            @mkdir(dirname($file), 0777, true);
+        }
         $this->document->save($input->getArgument('file'));
     }
 
