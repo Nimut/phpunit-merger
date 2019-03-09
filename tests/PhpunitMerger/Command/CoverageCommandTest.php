@@ -2,8 +2,9 @@
 namespace Nimut\PhpunitMerger\Tests\Command;
 
 use Nimut\PhpunitMerger\Command\CoverageCommand;
+use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class CoverageCommandTest extends AbstractCommandTest
 {
@@ -12,11 +13,10 @@ class CoverageCommandTest extends AbstractCommandTest
      */
     protected $outputFile = 'coverage.xml';
 
-    /**
-     * @depends testFileNotExists
-     */
-    public function testRunMergesCoverage()
+    public function testCoverageWritesOutputFile()
     {
+        $this->assertOutputFileNotExists();
+
         $input = new ArgvInput(
             [
                 'coverage',
@@ -24,11 +24,74 @@ class CoverageCommandTest extends AbstractCommandTest
                 $this->logDirectory . $this->outputFile,
             ]
         );
-        $output = new ConsoleOutput();
+        $output = $this->prophesize(OutputInterface::class);
+        $output->write(Argument::any())->shouldNotBeCalled();
 
         $command = new CoverageCommand();
-        $command->run($input, $output);
+        $command->run($input, $output->reveal());
 
         $this->assertFileExists($this->logDirectory . $this->outputFile);
+    }
+
+    public function testCoverageWritesStandardOutput()
+    {
+        $this->assertOutputFileNotExists();
+
+        $input = new ArgvInput(
+            [
+                'coverage',
+                $this->logDirectory . 'coverage/',
+            ]
+        );
+        $output = $this->prophesize(OutputInterface::class);
+        $output->write(Argument::type('string'))->shouldBeCalled();
+
+        $command = new CoverageCommand();
+        $command->run($input, $output->reveal());
+    }
+
+    public function testCoverageWritesHtmlReport()
+    {
+        $this->outputFile = 'html/index.html';
+        $this->assertOutputDirectoryNotExists();
+
+        $input = new ArgvInput(
+            [
+                'coverage',
+                $this->logDirectory . 'coverage/',
+                '--html=' . $this->logDirectory . dirname($this->outputFile),
+            ]
+        );
+        $output = $this->prophesize(OutputInterface::class);
+        $output->write(Argument::type('string'))->shouldBeCalled();
+
+        $command = new CoverageCommand();
+        $command->run($input, $output->reveal());
+
+        $this->assertFileExists($this->logDirectory . $this->outputFile);
+    }
+
+    public function testCoverageWritesOutputFileAndHtmlReport()
+    {
+        $this->outputFile = 'html/coverage.xml';
+        $this->assertOutputFileNotExists();
+        $this->assertOutputDirectoryNotExists();
+
+        $input = new ArgvInput(
+            [
+                'coverage',
+                $this->logDirectory . 'coverage/',
+                '--html=' . $this->logDirectory . dirname($this->outputFile),
+                $this->logDirectory . $this->outputFile,
+            ]
+        );
+        $output = $this->prophesize(OutputInterface::class);
+        $output->write(Argument::any())->shouldNotBeCalled();
+
+        $command = new CoverageCommand();
+        $command->run($input, $output->reveal());
+
+        $this->assertFileExists($this->logDirectory . $this->outputFile);
+        $this->assertFileExists($this->logDirectory . dirname($this->outputFile) . '/index.html');
     }
 }
