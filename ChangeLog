@@ -1,3 +1,8 @@
+2019-05-15         [RELEASE] Release of nimut/phpunit-merger 0.3.0 (Nicole Cordes)
+2019-03-09 52e6874 [FEATURE] Add more unit tests to cover new CoverageCommand option (Nicole Cordes)
+2019-03-09 e2daa30 [FEATURE] Add option to CoverageCommand to generate HTML report (Nicole Cordes)
+2019-03-09 9d9d409 [BUGFIX] Ensure existing output directory for LogCommand file (Nicole Cordes)
+
 2019-03-08         [RELEASE] Release of nimut/phpunit-merger 0.2.0 (Nicole Cordes)
 2019-03-08 d2cf8b3 [BUGFIX] Rewrite unit tests for phpunit/phpunit ^8.0 (Nicole Cordes)
 2019-03-08 279810f [TASK] Raise phpunit/php-code-coverage compatibility to ^7.0 (Nicole Cordes)
