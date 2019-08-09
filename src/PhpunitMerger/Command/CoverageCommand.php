@@ -1,6 +1,7 @@
 <?php
 namespace Nimut\PhpunitMerger\Command;
 
+use Exception;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Report\Clover;
 use SebastianBergmann\CodeCoverage\Report\Html\Facade;
@@ -45,6 +46,9 @@ class CoverageCommand extends Command
 
         foreach ($finder as $file) {
             $coverage = require $file->getRealPath();
+            if (!get_class($coverage) === CodeCoverage::class) {
+                throw new Exception($file->getRealPath() . ' does not return a ' . CodeCoverage::class . ' class!');
+            }
             $codeCoverage->merge($coverage);
         }
 
