@@ -45,6 +45,9 @@ class CoverageCommand extends Command
 
         foreach ($finder as $file) {
             $coverage = require $file->getRealPath();
+            if (!$coverage instanceof CodeCoverage) {
+                throw new \RuntimeException($file->getRealPath() . ' doesn\'t return a valid ' . CodeCoverage::class . ' object!');
+            }
             $codeCoverage->merge($coverage);
         }
 
