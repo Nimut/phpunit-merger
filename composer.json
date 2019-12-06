@@ -26,7 +26,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0.8 < 7.4",
+        "php": ">=7.0.8 < 7.5",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-simplexml": "*",
