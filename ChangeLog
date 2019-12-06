@@ -1,3 +1,6 @@
+2019-12-06         [RELEASE] Release of nimut/phpunit-merger 0.3.2 (Nicole Cordes)
+2019-12-06 6d2e7be [TASK] Raise PHP compatibility to 7.4 (Nicole Cordes)
+
 2019-09-13         [RELEASE] Release of nimut/phpunit-merger 0.3.1 (Nicole Cordes)
 2019-09-13 f4f2407 Replace get_class with instanceof comparrision (Nicole Cordes)
 2019-08-09 48b1a3d Show error if the scanned file is not a valid PHP script. (Thomas Eimers)
