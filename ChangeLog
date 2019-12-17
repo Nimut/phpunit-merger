@@ -1,3 +1,6 @@
+2019-12-17         [RELEASE] Release of nimut/phpunit-merger 0.3.3 (Nicole Cordes)
+2019-12-17 79d5057 [TASK] Allow lower symfony dependencies (Nicole Cordes)
+
 2019-12-06         [RELEASE] Release of nimut/phpunit-merger 0.3.2 (Nicole Cordes)
 2019-12-06 6d2e7be [TASK] Raise PHP compatibility to 7.4 (Nicole Cordes)
 
