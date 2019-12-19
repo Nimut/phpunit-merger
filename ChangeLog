@@ -1,3 +1,6 @@
+2019-12-19         [RELEASE] Release of nimut/phpunit-merger 0.3.4 (Nicole Cordes)
+2019-12-19 d94aedd [TASK] Raise Symfony dependencies to include 5.0 (Nicole Cordes)
+
 2019-12-17         [RELEASE] Release of nimut/phpunit-merger 0.3.3 (Nicole Cordes)
 2019-12-17 79d5057 [TASK] Allow lower symfony dependencies (Nicole Cordes)
 
