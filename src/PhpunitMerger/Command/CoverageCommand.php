@@ -56,6 +56,8 @@ class CoverageCommand extends Command
         if ($html !== null) {
             $this->writeHtmlReport($codeCoverage, $html);
         }
+
+        return 0;
     }
 
     private function writeCodeCoverage(CodeCoverage $codeCoverage, OutputInterface $output, $file = null)

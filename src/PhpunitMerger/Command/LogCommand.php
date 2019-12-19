@@ -70,6 +70,8 @@ class LogCommand extends Command
             @mkdir(dirname($file), 0777, true);
         }
         $this->document->save($input->getArgument('file'));
+
+        return 0;
     }
 
     private function addTestSuites(\DOMElement $parent, array $testSuites)
