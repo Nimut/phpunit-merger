@@ -30,7 +30,7 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-simplexml": "*",
-        "phpunit/php-code-coverage": ">=5.0 <8.0",
+        "phpunit/php-code-coverage": ">=5.0 <9.0",
         "symfony/console": ">=2.7 <6.0",
         "symfony/finder": ">=2.7 <6.0"
     },
