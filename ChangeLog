@@ -1,3 +1,8 @@
+2020-05-08         [RELEASE] Release of nimut/phpunit-merger 0.3.5 (Nicole Cordes)
+2020-05-08 b3b25ea Update Travis CI configuration (Nicole Cordes)
+2020-05-08 423219b Allow compatible PHPUnit version (Nicole Cordes)
+2020-05-07 589f982 adds support for php-code-coverage 8 (Deniz Sokullu)
+
 2019-12-19         [RELEASE] Release of nimut/phpunit-merger 0.3.4 (Nicole Cordes)
 2019-12-19 d94aedd [TASK] Raise Symfony dependencies to include 5.0 (Nicole Cordes)
 
