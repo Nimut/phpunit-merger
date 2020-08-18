@@ -1,3 +1,9 @@
+2020-08-18         [RELEASE] Release of nimut/phpunit-merger 1.0.0 (Nicole Cordes)
+2020-08-18 16fb969 [FEATURE] Add support for phpunit/php-code-coverage ^9.0 (Nicole Cordes)
+2020-08-18 b9526f2 [TASK] Update StyleCI and PHP CS Fixer configuration (Nicole Cordes)
+2020-08-18 0d64720 [FEATURE] Add merge support for multiple testsuites (Nicole Cordes)
+2020-05-08 caf1079 [BUGFIX] Raise PHP version for SonarQube scanner (Nicole Cordes)
+
 2020-05-08         [RELEASE] Release of nimut/phpunit-merger 0.3.5 (Nicole Cordes)
 2020-05-08 b3b25ea Update Travis CI configuration (Nicole Cordes)
 2020-05-08 423219b Allow compatible PHPUnit version (Nicole Cordes)
