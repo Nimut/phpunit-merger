@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Nimut\PhpunitMerger\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -93,7 +96,7 @@ class LogCommand extends Command
                 $attributes = $testSuite['@attributes'] ?? [];
                 foreach ($attributes as $key => $value) {
                     $value = $key === 'name' ? $value : 0;
-                    $element->setAttribute($key, $value);
+                    $element->setAttribute($key, (string)$value);
                 }
                 $parent->appendChild($element);
                 $this->domElements[$name] = $element;
@@ -126,7 +129,7 @@ class LogCommand extends Command
 
             $element = $this->document->createElement('testcase');
             foreach ($attributes as $key => $value) {
-                $element->setAttribute($key, $value);
+                $element->setAttribute($key, (string)$value);
                 if (!is_numeric($value)) {
                     continue;
                 }
@@ -140,7 +143,7 @@ class LogCommand extends Command
     private function addAttributeValueToTestSuite(\DOMElement $element, $key, $value)
     {
         $currentValue = $element->hasAttribute($key) ? $element->getAttribute($key) : 0;
-        $element->setAttribute($key, $currentValue + $value);
+        $element->setAttribute($key, (string)($currentValue + $value));
 
         if ($element->hasAttribute('parent')) {
             $parent = $element->getAttribute('parent');

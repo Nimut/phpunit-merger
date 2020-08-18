@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Nimut\PhpunitMerger\Tests\Command\Log;
 
 use Nimut\PhpunitMerger\Command\LogCommand;

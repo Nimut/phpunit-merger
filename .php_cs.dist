@@ -14,21 +14,31 @@ return PhpCsFixer\Config::create()
             'syntax' => 'short',
         ],
         'binary_operator_spaces' => true,
+        'blank_line_after_opening_tag' => true,
         'blank_line_before_return' => true,
+        'cast_spaces' => [
+            'space' => 'none',
+        ],
+        'compact_nullable_typehint' => true,
         'concat_space' => [
             'spacing' => 'one',
         ],
+        'declare_equal_normalize' => [
+            'space' => 'none'
+        ],
+        'declare_strict_types' => true,
         'function_typehint_space' => true,
         'hash_to_slash_comment' => true,
         'linebreak_after_opening_tag' => true,
         'lowercase_cast' => true,
+        'lowercase_constants' => true,
+        'lowercase_static_reference' => true,
         'method_separation' => true,
         'native_function_casing' => true,
         'new_with_braces' => true,
+        'no_alias_functions' => true,
         'no_blank_lines_after_class_opening' => true,
         'no_blank_lines_after_phpdoc' => true,
-        'no_blank_lines_before_namespace' => true,
-        'no_alias_functions' => true,
         'no_empty_comment' => true,
         'no_empty_phpdoc' => true,
         'no_empty_statement' => true,
@@ -62,7 +72,9 @@ return PhpCsFixer\Config::create()
         'no_useless_return' => true,
         'no_whitespace_before_comma_in_array' => true,
         'no_whitespace_in_blank_line' => true,
+        'non_printable_character' => true,
         'normalize_index_brace' => true,
+        'object_operator_without_whitespace' => true,
         'ordered_imports' => true,
         'phpdoc_add_missing_param_annotation' => true,
         'phpdoc_annotation_without_dot' => true,
@@ -74,9 +86,13 @@ return PhpCsFixer\Config::create()
         'phpdoc_single_line_var_spacing' => true,
         'phpdoc_trim' => true,
         'phpdoc_types' => true,
+        'self_accessor' => true,
         'phpdoc_var_without_name' => true,
+        'return_type_declaration' => ['space_before' => 'none'],
         'short_scalar_cast' => true,
+        'single_blank_line_before_namespace' => true,
         'single_quote' => true,
+        'single_trait_insert_per_statement' => true,
         'standardize_not_equals' => true,
         'ternary_operator_spaces' => true,
         'trailing_comma_in_multiline_array' => true,
@@ -86,5 +102,4 @@ return PhpCsFixer\Config::create()
         PhpCsFixer\Finder::create()
             ->in(__DIR__)
             ->exclude('.Build')
-            ->notName('ext_emconf.php')
     );

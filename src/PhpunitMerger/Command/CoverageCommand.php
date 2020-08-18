@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Nimut\PhpunitMerger\Command;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
