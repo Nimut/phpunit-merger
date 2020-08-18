@@ -77,8 +77,10 @@ class LogCommand extends Command
     private function addTestSuites(\DOMElement $parent, array $testSuites)
     {
         foreach ($testSuites as $testSuite) {
-            $attributes = $testSuite['@attributes'] ?? [];
             if (empty($testSuite['@attributes']['name'])) {
+                if (!empty($testSuite['testsuite'])) {
+                    $this->addTestSuites($parent, $testSuite['testsuite']);
+                }
                 continue;
             }
             $name = $testSuite['@attributes']['name'];
@@ -88,6 +90,7 @@ class LogCommand extends Command
             } else {
                 $element = $this->document->createElement('testsuite');
                 $element->setAttribute('parent', $parent->getAttribute('name'));
+                $attributes = $testSuite['@attributes'] ?? [];
                 foreach ($attributes as $key => $value) {
                     $value = $key === 'name' ? $value : 0;
                     $element->setAttribute($key, $value);
