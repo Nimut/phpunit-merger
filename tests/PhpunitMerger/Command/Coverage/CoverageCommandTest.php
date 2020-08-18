@@ -1,12 +1,14 @@
 <?php
-namespace Nimut\PhpunitMerger\Tests\Command;
+namespace Nimut\PhpunitMerger\Tests\Command\Coverage;
 
 use Nimut\PhpunitMerger\Command\CoverageCommand;
+use Nimut\PhpunitMerger\Tests\Command\AbstractCommandTest;
 use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CoverageCommandTest extends AbstractCommandTest
+
 {
     /**
      * @var string

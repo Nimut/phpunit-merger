@@ -1,7 +1,8 @@
 <?php
-namespace Nimut\PhpunitMerger\Tests\Command;
+namespace Nimut\PhpunitMerger\Tests\Command\Log;
 
 use Nimut\PhpunitMerger\Command\LogCommand;
+use Nimut\PhpunitMerger\Tests\Command\AbstractCommandTest;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
