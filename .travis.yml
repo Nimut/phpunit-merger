@@ -61,6 +61,9 @@ jobs:
   include:
     - stage: test
       php: 7.4
+      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0"
+    - stage: test
+      php: 7.4
       env: COVERAGE_VERSIONS="~8.0.0"
     - stage: test
       php: 7.4
@@ -74,6 +77,9 @@ jobs:
     - stage: test
       php: 7.4
       env: COVERAGE_VERSIONS="^5.0 ^6.0 ^7.0 ^8.0"
+    - stage: test
+      php: 7.3
+      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0"
     - stage: test
       php: 7.3
       env: COVERAGE_VERSIONS="~8.0.0"
@@ -120,7 +126,7 @@ jobs:
     - stage: ✔ with sonarqube scanner
       if: type = push AND branch IN (master, pre-merge) AND env(SONAR_TOKEN) IS present AND fork = false
       php: 7.3
-      env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0 ~6.0.0 ~6.1.0 ~7.0.0 ~8.0.0"
+      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0"
       before_install:
       before_script:
       script:

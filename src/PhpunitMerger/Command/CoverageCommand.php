@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Nimut\PhpunitMerger\Command;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Filter as CodeCoverageFilter;
 use SebastianBergmann\CodeCoverage\Report\Clover;
 use SebastianBergmann\CodeCoverage\Report\Html\Facade;
 use Symfony\Component\Console\Command\Command;
@@ -44,7 +46,7 @@ class CoverageCommand extends Command
         $finder->files()
             ->in(realpath($input->getArgument('directory')));
 
-        $codeCoverage = new CodeCoverage();
+        $codeCoverage = $this->getCodeCoverage();
 
         foreach ($finder as $file) {
             $coverage = require $file->getRealPath();
@@ -61,6 +63,18 @@ class CoverageCommand extends Command
         }
 
         return 0;
+    }
+
+    private function getCodeCoverage()
+    {
+        $driver = null;
+        $filter = null;
+        if (method_exists(Driver::class, 'forLineCoverage')) {
+            $filter = new CodeCoverageFilter();
+            $driver = Driver::forLineCoverage($filter);
+        }
+
+        return new CodeCoverage($driver, $filter);
     }
 
     private function writeCodeCoverage(CodeCoverage $codeCoverage, OutputInterface $output, $file = null)
