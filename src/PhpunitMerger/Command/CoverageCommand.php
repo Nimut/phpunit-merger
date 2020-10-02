@@ -71,9 +71,9 @@ class CoverageCommand extends Command
         $this->writeCodeCoverage($codeCoverage, $output, $input->getArgument('file'));
         $html = $input->getOption('html');
         if ($html !== null) {
-            $lowUpperBound = $input->getOption('lowUpperBound') ?: 50;
-            $highLowerBound = $input->getOption('highLowerBound') ?: 90;
-            $this->writeHtmlReport($codeCoverage, $html, intval($lowUpperBound), intval($highLowerBound));
+            $lowUpperBound = (int)($input->getOption('lowUpperBound') ?: 50);
+            $highLowerBound = (int)($input->getOption('highLowerBound') ?: 90);
+            $this->writeHtmlReport($codeCoverage, $html, $lowUpperBound, $highLowerBound);
         }
 
         return 0;
