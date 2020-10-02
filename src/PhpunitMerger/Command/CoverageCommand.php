@@ -73,7 +73,7 @@ class CoverageCommand extends Command
         if ($html !== null) {
             $lowUpperBound = $input->getOption('lowUpperBound') ?: 50;
             $highLowerBound = $input->getOption('highLowerBound') ?: 90;
-            $this->writeHtmlReport($codeCoverage, $html, $lowUpperBound, $highLowerBound);
+            $this->writeHtmlReport($codeCoverage, $html, intval($lowUpperBound), intval($highLowerBound));
         }
 
         return 0;
