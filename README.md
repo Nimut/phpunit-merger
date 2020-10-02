@@ -37,6 +37,8 @@ $ vendor/bin/phpunit-merger coverage <directory> [--html=<directory>] [<file>]
 **Options**
 
 - `html`: Directory where the HTML report should be stored 
+- `lowUpperBound`: (optional) The lowUpperBound value to be used for HTML format 
+- `highLowerBound`: (optional) The highLowerBound value to be used for HTML format 
 
 ### Log
 

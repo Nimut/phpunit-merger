@@ -75,6 +75,29 @@ class CoverageCommandTest extends AbstractCommandTest
         $this->assertFileExists($this->logDirectory . $this->outputFile);
     }
 
+    public function testCoverageWritesHtmlReportWithCustomBounds()
+    {
+        $this->outputFile = 'html/index.html';
+        $this->assertOutputDirectoryNotExists();
+
+        $input = new ArgvInput(
+            [
+                'coverage',
+                $this->logDirectory . 'coverage/',
+                '--html=' . $this->logDirectory . dirname($this->outputFile),
+                '--lowUpperBound=20',
+                '--highLowerBound=70',
+            ]
+        );
+        $output = $this->prophesize(OutputInterface::class);
+        $output->write(Argument::type('string'))->shouldBeCalled();
+
+        $command = new CoverageCommand();
+        $command->run($input, $output->reveal());
+
+        $this->assertFileExists($this->logDirectory . $this->outputFile);
+    }
+
     public function testCoverageWritesOutputFileAndHtmlReport()
     {
         $this->outputFile = 'html/coverage.xml';
