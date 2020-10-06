@@ -37,6 +37,18 @@ class CoverageCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The directory where to write the code coverage report in HTML format'
+            )
+            ->addOption(
+                'lowUpperBound',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The lowUpperBound value to be used for HTML format'
+            )
+            ->addOption(
+                'highLowerBound',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The highLowerBound value to be used for HTML format'
             );
     }
 
@@ -59,7 +71,9 @@ class CoverageCommand extends Command
         $this->writeCodeCoverage($codeCoverage, $output, $input->getArgument('file'));
         $html = $input->getOption('html');
         if ($html !== null) {
-            $this->writeHtmlReport($codeCoverage, $html);
+            $lowUpperBound = (int)($input->getOption('lowUpperBound') ?: 50);
+            $highLowerBound = (int)($input->getOption('highLowerBound') ?: 90);
+            $this->writeHtmlReport($codeCoverage, $html, $lowUpperBound, $highLowerBound);
         }
 
         return 0;
@@ -86,9 +100,9 @@ class CoverageCommand extends Command
         }
     }
 
-    private function writeHtmlReport(CodeCoverage $codeCoverage, string $destination)
+    private function writeHtmlReport(CodeCoverage $codeCoverage, string $destination, int $lowUpperBound, int $highLowerBound)
     {
-        $writer = new Facade();
+        $writer = new Facade($lowUpperBound, $highLowerBound);
         $writer->process($codeCoverage, $destination);
     }
 }
