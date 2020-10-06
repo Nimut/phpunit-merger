@@ -1,3 +1,9 @@
+2020-10-06         [RELEASE] Release of nimut/phpunit-merger 1.1.0 (Nicole Cordes)
+2020-10-02 f42f8cc Ensure unit test checks own boundaries usage (Nicole Cordes)
+2020-10-02 e64b83b Prefer int casting to intval function (Nicole Cordes)
+2020-10-02 e0217b1 Parameters should be ints (carlos granados)
+2020-10-02 bb52378 Adds options for lowUpperBound and highLowerBound for HTML reports (carlos granados)
+
 2020-08-18         [RELEASE] Release of nimut/phpunit-merger 1.0.0 (Nicole Cordes)
 2020-08-18 16fb969 [FEATURE] Add support for phpunit/php-code-coverage ^9.0 (Nicole Cordes)
 2020-08-18 b9526f2 [TASK] Update StyleCI and PHP CS Fixer configuration (Nicole Cordes)
