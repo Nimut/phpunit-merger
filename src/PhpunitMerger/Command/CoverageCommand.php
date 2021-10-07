@@ -65,6 +65,7 @@ class CoverageCommand extends Command
             if (!$coverage instanceof CodeCoverage) {
                 throw new \RuntimeException($file->getRealPath() . ' doesn\'t return a valid ' . CodeCoverage::class . ' object!');
             }
+            $this->normalizeCoverage($coverage);
             $codeCoverage->merge($coverage);
         }
 
@@ -89,6 +90,15 @@ class CoverageCommand extends Command
         }
 
         return new CodeCoverage($driver, $filter);
+    }
+
+    private function normalizeCoverage(CodeCoverage $coverage)
+    {
+        $tests = $coverage->getTests();
+        foreach ($tests as &$test) {
+            $test['fromTestcase'] = $test['fromTestcase'] ?? false;
+        }
+        $coverage->setTests($tests);
     }
 
     private function writeCodeCoverage(CodeCoverage $codeCoverage, OutputInterface $output, $file = null)
