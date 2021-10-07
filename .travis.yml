@@ -20,6 +20,9 @@ jdk:
 
 sudo: required
 
+before_install:
+    - echo 'xdebug.mode=coverage' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
 install:
   - mkdir -p .Log/coverage/ .Log/log/
   - >
@@ -60,8 +63,11 @@ jobs:
   fast_finish: true
   include:
     - stage: test
+      php: 8.0
+      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0 ~9.2.0"
+    - stage: test
       php: 7.4
-      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0"
+      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0 ~9.2.0"
     - stage: test
       php: 7.4
       env: COVERAGE_VERSIONS="~8.0.0"
@@ -79,7 +85,7 @@ jobs:
       env: COVERAGE_VERSIONS="^5.0 ^6.0 ^7.0 ^8.0"
     - stage: test
       php: 7.3
-      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0"
+      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0 ~9.2.0"
     - stage: test
       php: 7.3
       env: COVERAGE_VERSIONS="~8.0.0"
@@ -126,8 +132,7 @@ jobs:
     - stage: ✔ with sonarqube scanner
       if: type = push AND branch IN (master, pre-merge) AND env(SONAR_TOKEN) IS present AND fork = false
       php: 7.3
-      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0"
-      before_install:
+      env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0 ~9.2.0"
       before_script:
       script:
         - >
