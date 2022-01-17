@@ -1,5 +1,7 @@
 language: php
 
+dist: bionic
+
 addons:
   apt:
     packages:
@@ -63,7 +65,7 @@ jobs:
   fast_finish: true
   include:
     - stage: test
-      php: 8.1
+      php: 8.1.0
       env: COVERAGE_VERSIONS="~9.0.0 ~9.1.0 ~9.2.0"
     - stage: test
       php: 8.0
@@ -126,9 +128,11 @@ jobs:
       php: 7.1
       env: COVERAGE_VERSIONS="^5.0 ^6.0"
     - stage: test
+      dist: xenial
       php: 7.0
       env: COVERAGE_VERSIONS="~5.0.0 ~5.1.0 ~5.2.0 ~5.3.0"
     - stage: test
+      dist: xenial
       php: 7.0
       env: COVERAGE_VERSIONS="^5.0"
 
