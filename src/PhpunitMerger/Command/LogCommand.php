@@ -48,6 +48,16 @@ class LogCommand extends Command
         $this->document->formatOutput = true;
 
         $root = $this->document->createElement('testsuites');
+        $baseSuite = $this->document->createElement('testsuite');
+        $baseSuite->setAttribute('name', "");
+        $baseSuite->setAttribute('tests', "0");
+        $baseSuite->setAttribute('assertions', "0");
+        $baseSuite->setAttribute('errors', "0");
+        $baseSuite->setAttribute('failures', "0");
+        $baseSuite->setAttribute('skipped', "0");
+        $baseSuite->setAttribute('time', "0");
+
+        $root->appendChild($baseSuite);
         $this->document->appendChild($root);
 
         foreach ($finder as $file) {
@@ -55,7 +65,7 @@ class LogCommand extends Command
                 $xml = new \SimpleXMLElement(file_get_contents($file->getRealPath()));
                 $xmlArray = json_decode(json_encode($xml), true);
                 if (!empty($xmlArray)) {
-                    $this->addTestSuites($root, $xmlArray);
+                    $this->addTestSuites($baseSuite, $xmlArray);
                 }
             } catch (\Exception $exception) {
                 // Initial fallthrough
@@ -95,7 +105,6 @@ class LogCommand extends Command
                 $element->setAttribute('parent', $parent->getAttribute('name'));
                 $attributes = $testSuite['@attributes'] ?? [];
                 foreach ($attributes as $key => $value) {
-                    $value = $key === 'name' ? $value : 0;
                     $element->setAttribute($key, (string)$value);
                 }
                 $parent->appendChild($element);
@@ -142,13 +151,16 @@ class LogCommand extends Command
 
     private function addAttributeValueToTestSuite(\DOMElement $element, $key, $value)
     {
-        $currentValue = $element->hasAttribute($key) ? $element->getAttribute($key) : 0;
-        $element->setAttribute($key, (string)($currentValue + $value));
+        $keysToCalculate = ["assertions", "time", "tests", "errors", "failures", "skipped"];
+        if (in_array($key, $keysToCalculate)) {
+            $currentValue = $element->hasAttribute($key) ? $element->getAttribute($key) : 0;
+            $element->setAttribute($key, (string)($currentValue + $value));
 
-        if ($element->hasAttribute('parent')) {
-            $parent = $element->getAttribute('parent');
-            if (isset($this->domElements[$parent])) {
-                $this->addAttributeValueToTestSuite($this->domElements[$parent], $key, $value);
+            if ($element->hasAttribute('parent')) {
+                $parent = $element->getAttribute('parent');
+                if (isset($this->domElements[$parent])) {
+                    $this->addAttributeValueToTestSuite($this->domElements[$parent], $key, $value);
+                }
             }
         }
     }
