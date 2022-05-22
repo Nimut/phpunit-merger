@@ -16,14 +16,14 @@ class LogCommandTest extends AbstractCommandTest
      */
     protected $outputFile = 'log.xml';
 
-    public function testRunMergesCoverage()
+    public function testRunMergesLogs()
     {
         $this->assertOutputFileNotExists();
 
         $input = new ArgvInput(
             [
                 'log',
-                $this->logDirectory . 'log/',
+                __DIR__ . '/datasets/',
                 $this->logDirectory . $this->outputFile,
             ]
         );
@@ -33,5 +33,6 @@ class LogCommandTest extends AbstractCommandTest
         $command->run($input, $output->reveal());
 
         $this->assertFileExists($this->logDirectory . $this->outputFile);
+        self::assertXmlFileEqualsXmlFile(__DIR__ . '/expected_merge.xml', $this->logDirectory . $this->outputFile);
     }
 }
