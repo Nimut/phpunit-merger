@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="" tests="6" assertions="6" errors="0" failures="1" skipped="5" time="10.119620">
+        <testsuite name="Unit Tests" tests="6" assertions="6" errors="0" failures="1" skipped="5" time="10.119620">
+            <testsuite name="ForestsoftOrderBenchmark\Tests\Unit\InstallerTest" file="/var/www/html/custom/project/ForestsoftOrderBenchmark/Tests/Unit/InstallerTest.php" tests="4" assertions="5" errors="0" failures="0" skipped="0" time="0.077074">
+                <testcase name="should_skip_install_mail_model_if_it_exist" class="ForestsoftOrderBenchmark\Tests\Unit\InstallerTest" classname="ForestsoftOrderBenchmark.Tests.Unit.InstallerTest" file="/var/www/html/custom/project/ForestsoftOrderBenchmark/Tests/Unit/InstallerTest.php" line="105" assertions="2" time="0.066342"/>
+                <testcase name="should_install_mail_model" class="ForestsoftOrderBenchmark\Tests\Unit\InstallerTest" classname="ForestsoftOrderBenchmark.Tests.Unit.InstallerTest" file="/var/www/html/custom/project/ForestsoftOrderBenchmark/Tests/Unit/InstallerTest.php" line="90" assertions="1" time="0.004449"/>
+                <testcase name="test_should_return_schema_tool" class="ForestsoftOrderBenchmark\Tests\Unit\InstallerTest" classname="ForestsoftOrderBenchmark.Tests.Unit.InstallerTest" file="/var/www/html/custom/project/ForestsoftOrderBenchmark/Tests/Unit/InstallerTest.php" line="118" assertions="1" time="0.001749"/>
+                <testcase name="test_install_should_create_tables" class="ForestsoftOrderBenchmark\Tests\Unit\InstallerTest" classname="ForestsoftOrderBenchmark.Tests.Unit.InstallerTest" file="/var/www/html/custom/project/ForestsoftOrderBenchmark/Tests/Unit/InstallerTest.php" line="61" assertions="1" time="0.004534"/>
+            </testsuite>
+            <testsuite name="CasProductLabels\Tests\Unit\Components\PDFLabelTest" file="/var/www/html/custom/project/CasProductLabels/Tests/Unit/Components/PDFLabelTest.php" tests="2" assertions="1" errors="0" failures="1" skipped="0" time="0.104663">
+                <testcase name="testCanCreatedByDI" class="CasProductLabels\Tests\Unit\Components\PDFLabelTest" classname="CasProductLabels.Tests.Unit.Components.PDFLabelTest" file="/var/www/html/custom/project/CasProductLabels/Tests/Unit/Components/PDFLabelTest.php" line="49" assertions="1" time="0.003620"/>
+                <testcase name="testGenerate" class="CasProductLabels\Tests\Unit\Components\PDFLabelTest" classname="CasProductLabels.Tests.Unit.Components.PDFLabelTest" file="/var/www/html/custom/project/CasProductLabels/Tests/Unit/Components/PDFLabelTest.php" line="33" assertions="0" time="0.101043">
+                    <failure type="PHPUnit\Framework\ExpectationFailedException">
+                        CasProductLabels\Tests\Unit\Components\PDFLabelTest::testGenerate
+                        Expectation failed for method name is equal to 'createRenderer' when invoked 1 time(s)
+                        Parameter 1 for invocation CasProductLabels\Components\RendererFactory::createRenderer(Shopware\Models\Document\Document Object (...), '&lt;!DOCTYPE html PUBLIC "-//W3C...tml&gt;\n', false): CasProductLabels\Components\PDFRenderer does not match expected value.
+                        Failed asserting that a traversable contains '&lt;html&gt;'.
+
+                        /var/www/html/custom/project/CasProductLabels/Components/PDFLabel.php:152
+                        /var/www/html/custom/project/CasProductLabels/Components/PDFLabel.php:95
+                        /var/www/html/custom/project/CasProductLabels/Tests/Unit/Components/PDFLabelTest.php:45
+                    </failure>
+                </testcase>
+            </testsuite>
+        </testsuite>
+    </testsuite>
+</testsuites>

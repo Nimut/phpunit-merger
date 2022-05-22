@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="" tests="2" assertions="3" errors="0" failures="0" skipped="0" time="8.728057">
+        <testsuite name="Integration Tests" tests="2" assertions="3" errors="0" failures="0" skipped="0" time="8.728057">
+            <testsuite name="ForestsoftMerchant\tests\functional\Components\FTPFiles\FTPFilesOrderImportNotificationTest" file="/var/www/html/custom/project/ForestsoftMerchant/tests/functional/Components/FTPFiles/FTPFilesOrderImportNotificationTest.php" tests="2" assertions="3" errors="0" failures="0" skipped="0" time="0.032107">
+                <testcase name="test__toString" class="ForestsoftMerchant\tests\functional\Components\FTPFiles\FTPFilesOrderImportNotificationTest" classname="ForestsoftMerchant.tests.functional.Components.FTPFiles.FTPFilesOrderImportNotificationTest" file="/var/www/html/custom/project/ForestsoftMerchant/tests/functional/Components/FTPFiles/FTPFilesOrderImportNotificationTest.php" line="13" assertions="1" time="0.006198"/>
+                <testcase name="test__toString_with_ordermessages" class="ForestsoftMerchant\tests\functional\Components\FTPFiles\FTPFilesOrderImportNotificationTest" classname="ForestsoftMerchant.tests.functional.Components.FTPFiles.FTPFilesOrderImportNotificationTest" file="/var/www/html/custom/project/ForestsoftMerchant/tests/functional/Components/FTPFiles/FTPFilesOrderImportNotificationTest.php" line="22" assertions="2" time="0.025909"/>
+            </testsuite>
+        </testsuite>
+    </testsuite>
+</testsuites>

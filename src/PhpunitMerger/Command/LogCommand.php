@@ -22,7 +22,7 @@ class LogCommand extends Command
      */
     private $domElements = [];
 
-    private $keysToCalculate = ["assertions", "time", "tests", "errors", "failures", "skipped"];
+    private $keysToCalculate = ['assertions', 'time', 'tests', 'errors', 'failures', 'skipped'];
 
     protected function configure()
     {
@@ -44,22 +44,22 @@ class LogCommand extends Command
     {
         $finder = new Finder();
         $finder->files()
-            ->in(realpath($input->getArgument('directory')));
+            ->in(realpath($input->getArgument('directory')))->sortByName(true);
 
         $this->document = new \DOMDocument('1.0', 'UTF-8');
         $this->document->formatOutput = true;
 
         $root = $this->document->createElement('testsuites');
         $baseSuite = $this->document->createElement('testsuite');
-        $baseSuite->setAttribute('name', "All Suites");
-        $baseSuite->setAttribute('tests', "0");
-        $baseSuite->setAttribute('assertions', "0");
-        $baseSuite->setAttribute('errors', "0");
-        $baseSuite->setAttribute('failures', "0");
-        $baseSuite->setAttribute('skipped', "0");
-        $baseSuite->setAttribute('time', "0");
+        $baseSuite->setAttribute('name', 'All Suites');
+        $baseSuite->setAttribute('tests', '0');
+        $baseSuite->setAttribute('assertions', '0');
+        $baseSuite->setAttribute('errors', '0');
+        $baseSuite->setAttribute('failures', '0');
+        $baseSuite->setAttribute('skipped', '0');
+        $baseSuite->setAttribute('time', '0');
 
-        $this->domElements["All Suites"] = $baseSuite;
+        $this->domElements['All Suites'] = $baseSuite;
 
         $root->appendChild($baseSuite);
         $this->document->appendChild($root);
@@ -67,13 +67,12 @@ class LogCommand extends Command
         foreach ($finder as $file) {
             try {
                 $xml = new \SimpleXMLElement(file_get_contents($file->getRealPath()));
-                $code = json_encode($xml);
                 $xmlArray = json_decode(json_encode($xml), true);
                 if (!empty($xmlArray)) {
                     $this->addTestSuites($baseSuite, $xmlArray);
                 }
             } catch (\Exception $exception) {
-                $output->writeln(sprintf("<error>Error in file %s: %s</error>", $file->getRealPath(), $exception->getMessage()));
+                $output->writeln(sprintf('<error>Error in file %s: %s</error>', $file->getRealPath(), $exception->getMessage()));
             }
         }
 
@@ -151,10 +150,11 @@ class LogCommand extends Command
             $this->domElements[$name] = $element;
         }
     }
+
     private function addChildElements(array $tree, \DOMElement $element)
     {
         foreach ($tree as $key => $value) {
-            if ($key == "@attributes") {
+            if ($key == '@attributes') {
                 continue;
             }
             $child = $this->document->createElement($key);
@@ -162,30 +162,18 @@ class LogCommand extends Command
             $element->appendChild($child);
         }
     }
-    private function addAttributeValueToTestSuite(\DOMElement $element, $key, $value)
-    {
-        if (in_array($key, $this->keysToCalculate)) {
-            $currentValue = $element->hasAttribute($key) ? $element->getAttribute($key) : 0;
-            $element->setAttribute($key, (string)($currentValue + $value));
-
-            if ($element->hasAttribute('parent')) {
-                $parent = $element->getAttribute('parent');
-                if (isset($this->domElements[$parent])) {
-                    $this->addAttributeValueToTestSuite($this->domElements[$parent], $key, $value);
-                }
-            }
-        }
-    }
 
     private function calculateTopLevelStats()
     {
         /** @var \DOMElement $topNode */
-        $suites = $this->document->getElementsByTagName("testsuites")->item(0);
+        $suites = $this->document->getElementsByTagName('testsuites')->item(0);
         $topNode = $suites->firstChild;
         if ($topNode->hasChildNodes()) {
             $stats = array_flip($this->keysToCalculate);
-            $stats = array_map(function ($_value) { return 0; }, $stats);
-            foreach($topNode->childNodes as $child) {
+            $stats = array_map(function ($_value) {
+                return 0;
+            }, $stats);
+            foreach ($topNode->childNodes as $child) {
                 $attributes = $child->attributes;
                 foreach ($attributes as $key => $value) {
                     if (in_array($key, $this->keysToCalculate)) {

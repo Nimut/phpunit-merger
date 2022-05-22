@@ -22,6 +22,7 @@ abstract class AbstractCommandTest extends TestCase
     public function assertOutputFileNotExists()
     {
         $filesystem = new Filesystem();
+        self::assertDirectoryExists($this->logDirectory, $this->logDirectory . ' does not exists');
         $filesystem->remove($this->logDirectory . $this->outputFile);
 
         $this->assertFileNotExists($this->logDirectory . $this->outputFile);
@@ -29,6 +30,7 @@ abstract class AbstractCommandTest extends TestCase
 
     public function assertOutputDirectoryNotExists()
     {
+        self::assertDirectoryExists($this->logDirectory, $this->logDirectory . ' does not exists');
         $filesystem = new Filesystem();
         $filesystem->remove($this->logDirectory . dirname($this->outputFile));
 
