@@ -22,6 +22,8 @@ class LogCommand extends Command
      */
     private $domElements = [];
 
+    private $keysToCalculate = ["assertions", "time", "tests", "errors", "failures", "skipped"];
+
     protected function configure()
     {
         $this->setName('log')
@@ -49,7 +51,7 @@ class LogCommand extends Command
 
         $root = $this->document->createElement('testsuites');
         $baseSuite = $this->document->createElement('testsuite');
-        $baseSuite->setAttribute('name', "");
+        $baseSuite->setAttribute('name', "All Suites");
         $baseSuite->setAttribute('tests', "0");
         $baseSuite->setAttribute('assertions', "0");
         $baseSuite->setAttribute('errors', "0");
@@ -57,18 +59,21 @@ class LogCommand extends Command
         $baseSuite->setAttribute('skipped', "0");
         $baseSuite->setAttribute('time', "0");
 
+        $this->domElements["All Suites"] = $baseSuite;
+
         $root->appendChild($baseSuite);
         $this->document->appendChild($root);
 
         foreach ($finder as $file) {
             try {
                 $xml = new \SimpleXMLElement(file_get_contents($file->getRealPath()));
+                $code = json_encode($xml);
                 $xmlArray = json_decode(json_encode($xml), true);
                 if (!empty($xmlArray)) {
                     $this->addTestSuites($baseSuite, $xmlArray);
                 }
             } catch (\Exception $exception) {
-                // Initial fallthrough
+                $output->writeln(sprintf("<error>Error in file %s: %s</error>", $file->getRealPath(), $exception->getMessage()));
             }
         }
 
@@ -77,7 +82,7 @@ class LogCommand extends Command
                 $domElement->removeAttribute('parent');
             }
         }
-
+        $this->calculateTopLevelStats();
         $file = $input->getArgument('file');
         if (!is_dir(dirname($file))) {
             @mkdir(dirname($file), 0777, true);
@@ -135,24 +140,31 @@ class LogCommand extends Command
             if (isset($this->domElements[$name])) {
                 continue;
             }
-
             $element = $this->document->createElement('testcase');
             foreach ($attributes as $key => $value) {
                 $element->setAttribute($key, (string)$value);
-                if (!is_numeric($value)) {
-                    continue;
-                }
-                $this->addAttributeValueToTestSuite($parent, $key, $value);
+            }
+            if (isset($testCase['failure']) || isset($testCase['warning']) || isset($testCase['error'])) {
+                $this->addChildElements($testCase, $element);
             }
             $parent->appendChild($element);
             $this->domElements[$name] = $element;
         }
     }
-
+    private function addChildElements(array $tree, \DOMElement $element)
+    {
+        foreach ($tree as $key => $value) {
+            if ($key == "@attributes") {
+                continue;
+            }
+            $child = $this->document->createElement($key);
+            $child->nodeValue = $value;
+            $element->appendChild($child);
+        }
+    }
     private function addAttributeValueToTestSuite(\DOMElement $element, $key, $value)
     {
-        $keysToCalculate = ["assertions", "time", "tests", "errors", "failures", "skipped"];
-        if (in_array($key, $keysToCalculate)) {
+        if (in_array($key, $this->keysToCalculate)) {
             $currentValue = $element->hasAttribute($key) ? $element->getAttribute($key) : 0;
             $element->setAttribute($key, (string)($currentValue + $value));
 
@@ -161,6 +173,28 @@ class LogCommand extends Command
                 if (isset($this->domElements[$parent])) {
                     $this->addAttributeValueToTestSuite($this->domElements[$parent], $key, $value);
                 }
+            }
+        }
+    }
+
+    private function calculateTopLevelStats()
+    {
+        /** @var \DOMElement $topNode */
+        $suites = $this->document->getElementsByTagName("testsuites")->item(0);
+        $topNode = $suites->firstChild;
+        if ($topNode->hasChildNodes()) {
+            $stats = array_flip($this->keysToCalculate);
+            $stats = array_map(function ($_value) { return 0; }, $stats);
+            foreach($topNode->childNodes as $child) {
+                $attributes = $child->attributes;
+                foreach ($attributes as $key => $value) {
+                    if (in_array($key, $this->keysToCalculate)) {
+                        $stats[$key] += $value->nodeValue;
+                    }
+                }
+            }
+            foreach ($stats as $key => $value) {
+                $topNode->setAttribute($key, (string)$value);
             }
         }
     }
