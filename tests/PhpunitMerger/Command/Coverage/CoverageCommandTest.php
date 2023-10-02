@@ -6,7 +6,6 @@ namespace Nimut\PhpunitMerger\Tests\Command\Coverage;
 
 use Nimut\PhpunitMerger\Command\CoverageCommand;
 use Nimut\PhpunitMerger\Tests\Command\AbstractCommandTestCase;
-use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -28,11 +27,12 @@ class CoverageCommandTest extends AbstractCommandTestCase
                 $this->logDirectory . $this->outputFile,
             ]
         );
-        $output = $this->prophesize(OutputInterface::class);
-        $output->write(Argument::any())->shouldNotBeCalled();
+        $output = $this->getMockBuilder(OutputInterface::class)
+            ->getMock();
+        $output->method('write')->willThrowException(new \Exception());
 
         $command = new CoverageCommand();
-        $command->run($input, $output->reveal());
+        $command->run($input, $output);
 
         $this->assertFileExists($this->logDirectory . $this->outputFile);
     }
@@ -47,11 +47,11 @@ class CoverageCommandTest extends AbstractCommandTestCase
                 $this->logDirectory . 'coverage/',
             ]
         );
-        $output = $this->prophesize(OutputInterface::class);
-        $output->write(Argument::type('string'))->shouldBeCalled();
+        $output = $this->getMockBuilder(OutputInterface::class)
+            ->getMock();
 
         $command = new CoverageCommand();
-        $command->run($input, $output->reveal());
+        $command->run($input, $output);
     }
 
     public function testCoverageWritesHtmlReport()
@@ -66,11 +66,11 @@ class CoverageCommandTest extends AbstractCommandTestCase
                 '--html=' . $this->logDirectory . dirname($this->outputFile),
             ]
         );
-        $output = $this->prophesize(OutputInterface::class);
-        $output->write(Argument::type('string'))->shouldBeCalled();
+        $output = $this->getMockBuilder(OutputInterface::class)
+            ->getMock();
 
         $command = new CoverageCommand();
-        $command->run($input, $output->reveal());
+        $command->run($input, $output);
 
         $this->assertFileExists($this->logDirectory . $this->outputFile);
     }
@@ -89,11 +89,11 @@ class CoverageCommandTest extends AbstractCommandTestCase
                 '--highLowerBound=70',
             ]
         );
-        $output = $this->prophesize(OutputInterface::class);
-        $output->write(Argument::type('string'))->shouldBeCalled();
+        $output = $this->getMockBuilder(OutputInterface::class)
+            ->getMock();
 
         $command = new CoverageCommand();
-        $command->run($input, $output->reveal());
+        $command->run($input, $output);
 
         $this->assertFileExists($this->logDirectory . $this->outputFile);
 
@@ -122,11 +122,12 @@ class CoverageCommandTest extends AbstractCommandTestCase
                 $this->logDirectory . $this->outputFile,
             ]
         );
-        $output = $this->prophesize(OutputInterface::class);
-        $output->write(Argument::any())->shouldNotBeCalled();
+        $output = $this->getMockBuilder(OutputInterface::class)
+            ->getMock();
+        $output->method('write')->willThrowException(new \Exception());
 
         $command = new CoverageCommand();
-        $command->run($input, $output->reveal());
+        $command->run($input, $output);
 
         $this->assertFileExists($this->logDirectory . $this->outputFile);
         $this->assertFileExists($this->logDirectory . dirname($this->outputFile) . '/index.html');
