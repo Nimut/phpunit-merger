@@ -1,3 +1,10 @@
+2023-10-02         [RELEASE] Release of phpunit-merger 1.1.3 (Nicole Cordes)
+2023-10-02 0ed7988 [BUGFIX] Require phpspec/prophecy as dev dependency (Nicole Cordes)
+2023-10-02 d767f1e [TASK] Rename deprecated AbstractTest file (Nicole Cordes)
+2023-10-02 40835f0 [BUGFIX] Ensure .Log folder exists during installation (Nicole Cordes)
+2023-10-02 abb7932 [FEATURE] Allow latest symfony dependencies (Nicole Cordes)
+2023-10-02 bd4ecd4 [TASK] Ignore .Log folder in .gitignore (Nicole Cordes)
+
 2022-01-18         [RELEASE] Release of phpunit-merger 1.1.2 (Nicole Cordes)
 2022-01-17 706e758 [TASK] Adjust PHP dependency in composer.json (Nicole Cordes)
 2022-01-17 9ad3487 [BUGFIX] Use correct PHP version for Travis CI (Nicole Cordes)
