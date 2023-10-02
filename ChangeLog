@@ -1,3 +1,6 @@
+2023-10-02         [RELEASE] Release of phpunit-merger 2.0.0 (Nicole Cordes)
+2023-10-02 ff24d85 [FEATURE] Add support for phpunit/php-code-coverage ^10.0 (Nicole Cordes)
+
 2023-10-02         [RELEASE] Release of phpunit-merger 1.1.3 (Nicole Cordes)
 2023-10-02 0ed7988 [BUGFIX] Require phpspec/prophecy as dev dependency (Nicole Cordes)
 2023-10-02 d767f1e [TASK] Rename deprecated AbstractTest file (Nicole Cordes)
