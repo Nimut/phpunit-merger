@@ -7,7 +7,7 @@ namespace Nimut\PhpunitMerger\Tests\Command;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-abstract class AbstractCommandTest extends TestCase
+abstract class AbstractCommandTestCase extends TestCase
 {
     /**
      * @var string

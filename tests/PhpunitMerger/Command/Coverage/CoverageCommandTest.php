@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Nimut\PhpunitMerger\Tests\Command\Coverage;
 
 use Nimut\PhpunitMerger\Command\CoverageCommand;
-use Nimut\PhpunitMerger\Tests\Command\AbstractCommandTest;
+use Nimut\PhpunitMerger\Tests\Command\AbstractCommandTestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CoverageCommandTest extends AbstractCommandTest
+class CoverageCommandTest extends AbstractCommandTestCase
 {
     /**
      * @var string
