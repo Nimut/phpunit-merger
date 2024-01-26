@@ -2,3 +2,4 @@
 /.idea
 /.Log
 composer.lock
+.phpunit.result.cache
