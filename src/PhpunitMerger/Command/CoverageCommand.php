@@ -50,7 +50,21 @@ class CoverageCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'The highLowerBound value to be used for HTML format'
-            );
+            )
+            ->addOption(
+                'projectRoot',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The path to the project source code'
+            )
+            ->addOption(
+                'fixRoot',
+                null,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
+                'The root path that will be replaced with the project root path',
+                []
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -61,12 +75,20 @@ class CoverageCommand extends Command
 
         $codeCoverage = $this->getCodeCoverage();
 
+        $projectRoot = $input->getOption('projectRoot');
+        $fixRoot = $input->getOption('fixRoot');
+
         foreach ($finder as $file) {
             $coverage = require $file->getRealPath();
             if (!$coverage instanceof CodeCoverage) {
                 throw new \RuntimeException($file->getRealPath() . ' doesn\'t return a valid ' . CodeCoverage::class . ' object!');
             }
             $this->normalizeCoverage($coverage);
+
+            if (!empty($projectRoot) && !empty($fixRoot)) {
+                $this->fixPaths($coverage, $projectRoot, $fixRoot);
+            }
+
             $codeCoverage->merge($coverage);
         }
 
@@ -95,6 +117,26 @@ class CoverageCommand extends Command
             $test['fromTestcase'] = $test['fromTestcase'] ?? false;
         }
         $coverage->setTests($tests);
+    }
+
+    private function fixPaths(CodeCoverage $coverage, string $projectRoot, array $paths)
+    {
+        $data = $coverage->getData();
+        $lineCoverage = [];
+        foreach ($data->lineCoverage() as $fileName => $coverageData) {
+            $newName = $fileName;
+            foreach ($paths as $path) {
+                $newName = str_replace($path, $projectRoot, $fileName);
+                if ($newName != $fileName) {
+                    break;
+                }
+            }
+
+            $lineCoverage[$newName] = $coverageData;
+        }
+
+        $data->setLineCoverage($lineCoverage);
+        $coverage->setData($data);
     }
 
     private function writeCodeCoverage(CodeCoverage $codeCoverage, OutputInterface $output, $file = null)
