@@ -3,20 +3,21 @@ name: 🏃 tests
 on: [ push, pull_request, workflow_call ]
 
 jobs:
-    test:
-        name: 'COVERAGE: ${{ matrix.coverage }} - PHP: ${{ matrix.php }}'
+    compute:
+        uses: ./.github/workflows/compute.yml
+
+    build:
+        name: 'Build COVERAGE: ${{ matrix.coverage }} - PHP: ${{ matrix.php }}'
+
+        needs: [ compute ]
 
         strategy:
             fail-fast: false
             matrix:
-                os: [ 'ubuntu-latest' ]
-                coverage: [ '~9.0.0', '~9.1.0', '~9.2.0', '~10.0.0', '~10.1.0' ]
-                php: [ '8.0', '8.1', '8.2', '8.3' ]
-                exclude:
-                    -   coverage: '~10.0.0'
-                        php: '8.0'
-                    -   coverage: '~10.1.0'
-                        php: '8.0'
+                os: ${{ fromJson(needs.compute.outputs.os)  }}
+                coverage: ${{ fromJson(needs.compute.outputs.coverage)  }}
+                php: ${{ fromJson(needs.compute.outputs.php)  }}
+                exclude: ${{ fromJson(needs.compute.outputs.exclude)  }}
 
         runs-on: ${{ matrix.os }}
 
@@ -32,10 +33,10 @@ jobs:
                 id: restore-composer-cache
                 with:
                     path: ${{ steps.composer-cache.outputs.dir }}
-                    key: ${{ runner.os }}-composer-${{ matrix.coverage }}-${{ matrix.php }}
+                    key: ${{ runner.os }}-${{ matrix.php }}-${{ matrix.coverage }}
                     restore-keys: |
-                        ${{ runner.os }}-composer-${{ matrix.coverage }}-
-                        ${{ runner.os }}-composer-
+                        ${{ runner.os }}-${{ matrix.php }}-
+                        ${{ runner.os }}-
 
             -   name: Set up PHP Version ${{ matrix.php }}
                 uses: shivammathur/setup-php@v2
