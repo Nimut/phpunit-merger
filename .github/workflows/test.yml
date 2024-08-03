@@ -29,6 +29,12 @@ jobs:
                 id: composer-cache
                 run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
+            -   name: Store PHP code coverage version
+                id: version-cache
+                env:
+                    COVERAGE: ${{ matrix.coverage }}
+                run: echo "version=$(echo $COVERAGE | tr -d -c 0-9)" >> $GITHUB_OUTPUT
+
             -   uses: actions/cache/restore@v4
                 id: restore-composer-cache
                 with:
@@ -65,3 +71,14 @@ jobs:
 
             -   name: Lint PHP
                 run: php .Build/bin/parallel-lint --exclude .Build .
+
+            -   name: Run PHPUnit
+                if: ${{ success() || failure() }}
+                run: .Build/bin/phpunit --log-junit .Log/log/junit_${{ steps.version-cache.outputs.version }}.xml --coverage-php .Log/coverage/coverage_${{ steps.version-cache.outputs.version }}.cov --coverage-filter src/ tests/
+
+            -   name: Archive PHPUnit logs
+                uses: actions/upload-artifact@v4
+                with:
+                    name: phpunit-logs-${{ runner.os }}-${{ matrix.php }}-${{ matrix.coverage }}
+                    path: .Log/*
+                    retention-days: 1
