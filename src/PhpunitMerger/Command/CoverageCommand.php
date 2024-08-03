@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nimut\PhpunitMerger\Command;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\Report\Clover;
@@ -84,6 +85,12 @@ class CoverageCommand extends Command
     private function getCodeCoverage()
     {
         $filter = new Filter();
+
+        if (method_exists(Driver::class, 'forLineCoverage')) {
+            $driver = Driver::forLineCoverage($filter);
+
+            return new CodeCoverage($driver, $filter);
+        }
 
         return new CodeCoverage((new Selector())->forLineCoverage($filter), $filter);
     }
