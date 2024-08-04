@@ -7,6 +7,8 @@ on:
                 value: ${{ jobs.compute.outputs.os }}
             coverage:
                 value: ${{ jobs.compute.outputs.coverage }}
+            major:
+                value: ${{ jobs.compute.outputs.major }}
             php:
                 value: ${{ jobs.compute.outputs.php }}
             exclude:
@@ -27,10 +29,26 @@ jobs:
         outputs:
             os: ${{ env.OS }}
             coverage: ${{ env.COVERAGE }}
+            major: ${{ steps.major-version.outputs.major  }}
             php: ${{ env.PHP }}
             exclude: ${{ env.EXCLUDE }}
 
         steps:
-            -   name: Pseudo step
-                if: false
-                run: echo
+            -   name: Compute major versions
+                id: major-version
+                run: |
+                    echo -e "COVERAGE\n"
+                    echo $COVERAGE
+                    echo -e "\n\nSplit by comma\n"
+                    echo $COVERAGE | tr "," "\n"
+                    echo -e "\n\nParse numbers\n"
+                    echo $COVERAGE | tr "," "\n" | tr -cd "\n0-9"
+                    echo -e "\n\nCut last 2 characters\n"
+                    echo $COVERAGE | tr "," "\n" | tr -cd "\n0-9" | sed "s/.\{2\}$//"
+                    echo -e "\n\nSort by version\n"
+                    echo $COVERAGE | tr "," "\n" | tr -cd "\n0-9" | sed "s/.\{2\}$//" | sort -V
+                    echo -e "\n\nUnique values only\n"
+                    echo $COVERAGE | tr "," "\n" | tr -cd "\n0-9" | sed "s/.\{2\}$//" | sort -V | uniq
+                    echo -e "\n\nCovert to JSON\n"
+                    echo $COVERAGE | tr "," "\n" | tr -cd "\n0-9" | sed "s/.\{2\}$//" | sort -V | uniq | jq --compact-output --raw-input --slurp 'split("\n") | map(select(. != ""))'
+                    echo "major=$(echo $COVERAGE | tr "," "\n" | tr -cd "\n0-9" | sed "s/.\{2\}$//" | sort -V | uniq | jq --compact-output --raw-input --slurp 'split("\n") | map(select(. != ""))')" >> $GITHUB_OUTPUT
