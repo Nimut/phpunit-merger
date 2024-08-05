@@ -1,3 +1,16 @@
+2024-08-05         [RELEASE] Release of phpunit-merger 2.0.1 (Nicole Cordes)
+2024-01-26 790ea36 Allow Symfony ^7.0 as dependency (Kennard Vermeiren)
+2024-08-05 15ca05c [TASK] Remove Travis CI configuration (Nicole Cordes)
+2024-08-05 9d32123 [TASK] Increase log files (Nicole Cordes)
+2024-08-05 722e1eb [FEATURE] Add merge testing job (Nicole Cordes)
+2024-08-04 261efdf [FEATURE] Add major version processing (Nicole Cordes)
+2024-08-04 6ee2a5e [BUGFIX] Streamline PHPUnit configuration (Nicole Cordes)
+2024-08-03 d193bd5 [BUGFIX] Re-add compatibility to phpunit/php-code-coverage ^9.0 (Nicole Cordes)
+2024-08-03 f096c24 [FEATURE] Run PHPUnit tests and create artifacts (Nicole Cordes)
+2024-08-02 1522a51 [FEATURE] Compute matrix values (Nicole Cordes)
+2024-08-02 a715056 [FEATURE] Introduce GitHub Actions PHP linting (Nicole Cordes)
+2024-08-02 4b361a0 [BUGFIX] Fix StyleCI configuration (Nicole Cordes)
+
 2023-10-02         [RELEASE] Release of phpunit-merger 2.0.0 (Nicole Cordes)
 2023-10-02 ff24d85 [FEATURE] Add support for phpunit/php-code-coverage ^10.0 (Nicole Cordes)
 
