@@ -1,7 +1,8 @@
 # Merge multiple PHPUnit reports into one file
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/nimut/phpunit-merger.svg)](https://packagist.org/packages/nimut/phpunit-merger)
-[![StyleCI](https://styleci.io/repos/114540931/shield?branch=master)](https://styleci.io/repos/114540931)
+[![StyleCI](https://styleci.io/repos/114540931/shield?branch=main)](https://styleci.io/repos/114540931)
+![GitHub Actions](https://github.com/Nimut/phpunit-merger/actions/workflows/test.yml/badge.svg?event=push)
 
 Sometimes it is necessary to run multiple PHPUnit instances to execute all tests of a project. Unfortunately each run
 writes its own coverage and log reports. There is no support in PHPUnit to merge the reports of multiple runs.
