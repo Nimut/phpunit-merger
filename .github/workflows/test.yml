@@ -77,7 +77,7 @@ jobs:
 
             -   name: Run PHPUnit
                 if: ${{ success() || failure() }}
-                run: .Build/bin/phpunit --log-junit .Log/log/junit_${{ steps.version-cache.outputs.version }}.xml --coverage-php .Log/coverage/coverage_${{ steps.version-cache.outputs.version }}.cov --coverage-filter src/ tests/
+                run: find 'tests' -wholename '*Test.php' | parallel --gnu 'echo -e "\n\nRunning test {}"; HASH=${{ steps.version-cache.outputs.version }}_$( echo {} | md5sum | cut -d " " -f 1); .Build/bin/phpunit --log-junit .Log/log/junit_$HASH.xml --coverage-php .Log/coverage/coverage_$HASH.cov --coverage-filter src/ {}'
 
             -   name: Archive PHPUnit logs
                 uses: actions/upload-artifact@v4
