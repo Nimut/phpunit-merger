@@ -1,0 +1,163 @@
+name: 🏃 tests
+
+on: [ push, pull_request, workflow_call ]
+
+jobs:
+    compute:
+        uses: ./.github/workflows/compute.yml
+
+    build:
+        name: 'Build COVERAGE: ${{ matrix.coverage }} - PHP: ${{ matrix.php }}'
+
+        needs: [ compute ]
+
+        strategy:
+            fail-fast: false
+            matrix:
+                os: ${{ fromJson(needs.compute.outputs.os)  }}
+                coverage: ${{ fromJson(needs.compute.outputs.coverage)  }}
+                php: ${{ fromJson(needs.compute.outputs.php)  }}
+                exclude: ${{ fromJson(needs.compute.outputs.exclude)  }}
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Store Composer cache directory
+                id: composer-cache
+                run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            -   name: Store PHP code coverage version
+                id: version-cache
+                env:
+                    COVERAGE: ${{ matrix.coverage }}
+                run: |
+                    echo "version=$(echo $COVERAGE | tr -d -c 0-9)" >> $GITHUB_OUTPUT
+                    echo "major=$(echo $COVERAGE | tr -d -c 0-9 | sed 's/.\{2\}$//')" >> $GITHUB_OUTPUT
+
+            -   uses: actions/cache/restore@v4
+                id: restore-composer-cache
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ runner.os }}-${{ matrix.php }}-${{ steps.version-cache.outputs.major }}-${{ matrix.coverage }}
+                    restore-keys: |
+                        ${{ runner.os }}-${{ matrix.php }}-${{ steps.version-cache.outputs.major }}-
+                        ${{ runner.os }}-${{ matrix.php }}-
+                        ${{ runner.os }}-
+
+            -   name: Set up PHP Version ${{ matrix.php }}
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    coverage: xdebug
+                    tools: composer:v2
+
+            -   name: Environment Check
+                run: |
+                    php --version
+                    composer --version
+                    mkdir -p .Log/coverage/ .Log/log/
+
+            -   name: Validate composer.json
+                run: composer validate
+
+            -   name: Composer install
+                run: composer update --with "phpunit/php-code-coverage:${{ matrix.coverage }}" --no-interaction
+
+            -   name: Save composer cache
+                uses: actions/cache/save@v4
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ steps.restore-composer-cache.outputs.cache-primary-key }}
+
+            -   name: Lint PHP
+                run: php .Build/bin/parallel-lint --exclude .Build .
+
+            -   name: Run PHPUnit
+                if: ${{ success() || failure() }}
+                run: find 'tests' -wholename '*Test.php' | parallel --gnu 'echo -e "\n\nRunning test {}"; HASH=${{ steps.version-cache.outputs.version }}_$( echo {} | md5sum | cut -d " " -f 1); .Build/bin/phpunit --log-junit .Log/log/junit_$HASH.xml --coverage-php .Log/coverage/coverage_$HASH.cov --coverage-filter src/ {}'
+
+            -   name: Archive PHPUnit logs
+                uses: actions/upload-artifact@v4
+                with:
+                    name: phpunit-logs-${{ runner.os }}-${{ matrix.php }}-${{ steps.version-cache.outputs.major }}-${{ matrix.coverage }}
+                    path: .Log/*
+                    retention-days: 1
+
+    merge:
+        name: 'Merge COVERAGE: ${{ matrix.coverage }} - PHP: ${{ matrix.php }}'
+
+        needs: [ compute, build ]
+
+        strategy:
+            fail-fast: false
+            matrix:
+                os: ${{ fromJson(needs.compute.outputs.os)  }}
+                coverage: ${{ fromJson(needs.compute.outputs.major)  }}
+                php: ${{ fromJson(needs.compute.outputs.php)  }}
+                exclude: ${{ fromJson(needs.compute.outputs.exclude)  }}
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Download PHPUnit logs
+                uses: actions/download-artifact@v4
+                with:
+                    path: .Log
+                    pattern: phpunit-logs-${{ runner.os }}-${{ matrix.php }}-${{ matrix.coverage }}-*
+                    merge-multiple: true
+
+            -   name: Store Composer cache directory
+                id: composer-cache
+                run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            -   uses: actions/cache/restore@v4
+                id: restore-composer-cache
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ runner.os }}-${{ matrix.php }}-${{ matrix.coverage }}
+                    restore-keys: |
+                        ${{ runner.os }}-${{ matrix.php }}-
+                        ${{ runner.os }}-
+
+            -   name: Set up PHP Version ${{ matrix.php }}
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    coverage: xdebug
+                    tools: composer:v2
+
+            -   name: Environment Check
+                run: |
+                    php --version
+                    composer --version
+
+            -   name: Validate composer.json
+                run: composer validate
+
+            -   name: Composer install
+                run: composer update --with "phpunit/php-code-coverage:^${{ matrix.coverage }}.0" --no-interaction
+
+            -   name: Save composer cache
+                uses: actions/cache/save@v4
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ steps.restore-composer-cache.outputs.cache-primary-key }}
+
+            -   name: Merge log files
+                run: bin/phpunit-merger log .Log/log/ .Log/junit.xml
+
+            -   name: Merge coverage files
+                run: bin/phpunit-merger coverage .Log/coverage/ .Log/coverage.xml
+
+            -   name: Archive PHPUnit logs
+                uses: actions/upload-artifact@v4
+                with:
+                    name: phpunit-logs-merged-${{ runner.os }}-${{ matrix.php }}-${{ matrix.coverage }}
+                    path: .Log/*
+                    retention-days: 1
