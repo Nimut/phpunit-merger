@@ -82,7 +82,8 @@ class LogCommand extends Command
         foreach ($testSuites as $testSuite) {
             if (empty($testSuite['@attributes']['name'])) {
                 if (!empty($testSuite['testsuite'])) {
-                    $this->addTestSuites($parent, $testSuite['testsuite']);
+                    $children = isset($testSuite['testsuite']['@attributes']) ? [$testSuite['testsuite']] : $testSuite['testsuite'];
+                    $this->addTestSuites($parent, $children);
                 }
                 continue;
             }
