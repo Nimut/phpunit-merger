@@ -82,7 +82,8 @@ class LogCommand extends Command
         foreach ($testSuites as $testSuite) {
             if (empty($testSuite['@attributes']['name'])) {
                 if (!empty($testSuite['testsuite'])) {
-                    $this->addTestSuites($parent, $testSuite['testsuite']);
+                    $children = isset($testSuite['testsuite']['@attributes']) ? [$testSuite['testsuite']] : $testSuite['testsuite'];
+                    $this->addTestSuites($parent, $children);
                 }
                 continue;
             }
@@ -95,7 +96,7 @@ class LogCommand extends Command
                 $element->setAttribute('parent', $parent->getAttribute('name'));
                 $attributes = $testSuite['@attributes'] ?? [];
                 foreach ($attributes as $key => $value) {
-                    $value = $key === 'name' ? $value : 0;
+                    $value = $key === 'name' || $key === 'file' ? $value : 0;
                     $element->setAttribute($key, (string)$value);
                 }
                 $parent->appendChild($element);
@@ -116,27 +117,67 @@ class LogCommand extends Command
 
     private function addTestCases(\DOMElement $parent, array $testCases)
     {
+        $statusTags = [
+            'error' => 'errors',
+            'failure' => 'failures',
+            'skipped' => 'skipped',
+            'warning' => 'warnings',
+        ];
+
         foreach ($testCases as $testCase) {
             $attributes = $testCase['@attributes'] ?? [];
             if (empty($testCase['@attributes']['name'])) {
                 continue;
             }
             $name = $testCase['@attributes']['name'];
+            $class = $testCase['@attributes']['class'];
+            if (isset($this->domElements[$class . '::' . $name])) {
+                $previusTestCase = $this->domElements[$class . '::' . $name];
+                $previousTime = (float) ($previusTestCase->getAttribute('time') ?? 0);
+                $newTime = (float) ($testCase['@attributes']['time'] ?? 0);
+                $hasActualTestCaseAStatusTag = !empty(array_intersect(array_keys($testCase), array_keys($statusTags)));
+                $hasPreviusTestCaseAStatusTag = $previusTestCase->childNodes->length > 0;
 
-            if (isset($this->domElements[$name])) {
-                continue;
+                if ($hasActualTestCaseAStatusTag ||
+                    !$hasPreviusTestCaseAStatusTag &&
+                    $newTime < $previousTime) {
+                    continue;
+                }
+
+                $this->addAttributeValueToTestSuite($parent, 'tests', -1);
+                foreach ($previusTestCase->childNodes as $child) {
+                    $this->addAttributeValueToTestSuite($parent, $statusTags[$child->nodeName], -1);
+                }
+                foreach ($previusTestCase->attributes as $attribute) {
+                    if (!is_numeric($attribute->nodeValue) || $attribute->nodeName === 'line') {
+                        continue;
+                    }
+                    $this->addAttributeValueToTestSuite($parent, $attribute->nodeName, -$attribute->nodeValue);
+                }
+
+                $parent->removeChild($previusTestCase);
+                unset($this->domElements[$class . '::' . $name]);
             }
 
             $element = $this->document->createElement('testcase');
             foreach ($attributes as $key => $value) {
                 $element->setAttribute($key, (string)$value);
-                if (!is_numeric($value)) {
+                if (!is_numeric($value) || $key === 'line') {
                     continue;
                 }
                 $this->addAttributeValueToTestSuite($parent, $key, $value);
             }
+
+            $this->addAttributeValueToTestSuite($parent, 'tests', 1);
+            foreach ($statusTags as $key => $value) {
+                if (isset($testCase[$key])) {
+                    $this->addAttributeValueToTestSuite($parent, $value, 1);
+                    $element->appendChild($this->document->createElement($key));
+                }
+            }
+
             $parent->appendChild($element);
-            $this->domElements[$name] = $element;
+            $this->domElements[$class . '::' . $name] = $element;
         }
     }
 
